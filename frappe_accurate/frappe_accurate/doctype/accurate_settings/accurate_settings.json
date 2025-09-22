@@ -1,0 +1,137 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-09-17 19:52:40.393904",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "database_company_section",
+  "syncronize_data_accurate",
+  "get_database_accurate_by_api_token",
+  "db_id",
+  "api_token_section",
+  "app_key",
+  "signature_secret",
+  "column_break_sryk",
+  "api_token",
+  "oauth_section",
+  "client_id",
+  "client_secret",
+  "redirect_uri",
+  "column_break_ivkn",
+  "access_token",
+  "refresh_token",
+  "token_expiry"
+ ],
+ "fields": [
+  {
+   "fieldname": "api_token_section",
+   "fieldtype": "Section Break",
+   "label": "API Token"
+  },
+  {
+   "fieldname": "app_key",
+   "fieldtype": "Data",
+   "label": "App Key"
+  },
+  {
+   "fieldname": "column_break_sryk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "oauth_section",
+   "fieldtype": "Section Break",
+   "label": "OAuth"
+  },
+  {
+   "fieldname": "client_id",
+   "fieldtype": "Data",
+   "label": "Client ID"
+  },
+  {
+   "fieldname": "column_break_ivkn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "client_secret",
+   "fieldtype": "Data",
+   "label": "Client Secret"
+  },
+  {
+   "fieldname": "redirect_uri",
+   "fieldtype": "Small Text",
+   "label": "Redirect Uri"
+  },
+  {
+   "fieldname": "access_token",
+   "fieldtype": "Read Only",
+   "label": "access_token"
+  },
+  {
+   "fieldname": "refresh_token",
+   "fieldtype": "Read Only",
+   "label": "refresh_token"
+  },
+  {
+   "fieldname": "token_expiry",
+   "fieldtype": "Read Only",
+   "label": "token_expiry"
+  },
+  {
+   "fieldname": "db_id",
+   "fieldtype": "Table",
+   "label": "DB ID Mapping",
+   "options": "DB ID Accurate"
+  },
+  {
+   "fieldname": "api_token",
+   "fieldtype": "Text",
+   "label": "API Token"
+  },
+  {
+   "fieldname": "database_company_section",
+   "fieldtype": "Section Break",
+   "label": "Database Company"
+  },
+  {
+   "fieldname": "signature_secret",
+   "fieldtype": "Data",
+   "label": "Signature Secret"
+  },
+  {
+   "fieldname": "get_database_accurate_by_api_token",
+   "fieldtype": "Button",
+   "label": "Get Database Accurate By API Token"
+  },
+  {
+   "fieldname": "syncronize_data_accurate",
+   "fieldtype": "Button",
+   "label": "Syncronize Data Accurate"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-09-18 10:08:16.373444",
+ "modified_by": "Administrator",
+ "module": "Frappe Accurate",
+ "name": "Accurate Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
