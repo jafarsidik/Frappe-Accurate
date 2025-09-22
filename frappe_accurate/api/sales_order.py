@@ -55,6 +55,35 @@ def save_do(**kwargs):
 	except Exception:
 		return {"error": res.text, "status": res.status_code}
 
+@frappe.whitelist(allow_guest=True)
+def delete_do(**kwargs):
+	"""
+	Delete Sales Order ke Accurate API
+	Bisa dipanggil dari Frappe JS (frappe.call) atau Python
+	"""
+
+	host = host_token()  # ambil host terbaru via /api-token.do
+	url = f"{host}/accurate/api/sales-order/delete.do"
+	headers = get_headers()
+
+	# Ambil data dari args (kwargs)
+	data_post = {}
+		
+	for key, val in kwargs.items():
+		if val:  # hanya kirim field yang ada isinya
+			data_post[key] = val
+
+	if not data_post:
+		frappe.throw("Tidak ada data yang dikirim ke Accurate")
+
+	res = requests.post(url, headers=headers, data=data_post, timeout=30)
+	res.raise_for_status()
+
+	try:
+		return res.json()
+	except Exception:
+		return {"error": res.text, "status": res.status_code}
+
 @frappe.whitelist()
 def get_sales_order_by_id(id=None):
     """
