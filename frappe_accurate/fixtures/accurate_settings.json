@@ -1,0 +1,35 @@
+[
+ {
+  "access_token": null,
+  "api_token": "aat.NTE.eyJ2IjoxLCJ1IjoyMDYzNDYsImQiOjIwNzk0NjksImFpIjo1OTc1NSwiYWsiOiI3ZmIwN2NjYS0yYWM3LTQ5M2UtYTE3Yi1iYjFiMTQ0NGMxMjgiLCJhbiI6IkpGLUZyYXBwZSIsImFwIjoiOThkZTkzYTQtOGZmZC00ZTllLTkxOTMtYmU2MDlkNTIyOWMxIiwidCI6MTc1ODE2ODU1MzM3MH0.9E+aaHinoGyJl+19qDcWy5k6uPA8mmNeyAbjq0vbKWNZBNt3APJUbx1jG9yge/3FbGeYiy7GPJTmVRU1xSRSc/PP6dXG7z0d223qOAgtLtFfm2ZslMxrP2Ov6n0mcJtXGzVhRUV8CM3AgY4aojZ9FC1W4yEtPOT+i+xiEkSLn/FD1f0CakHlDKk9QHnRAJin6Rv5sv9X3Po=.rWED5qauACAhgWtUfB8tYROcR6r+GfgB9nW1iq+Gt78",
+  "app_key": "7fb07cca-2ac7-493e-a17b-bb1b1444c128",
+  "client_id": "98de93a4-8ffd-4e9e-9193-be609d5229c1",
+  "client_secret": "f23909381e034eaff4ac650bcf463aef",
+  "db_id": [
+   {
+    "alias": "PT Inovasi Dharma Mandiri Sejati",
+    "company": "IGH",
+    "demo": 0,
+    "expired": 0,
+    "host": null,
+    "id": "2079469",
+    "licenseend": "17/10/2025",
+    "open_db": 0,
+    "parent": "Accurate Settings",
+    "parentfield": "db_id",
+    "parenttype": "Accurate Settings",
+    "sample": 0,
+    "session_id": null,
+    "trial": 1
+   }
+  ],
+  "docstatus": 0,
+  "doctype": "Accurate Settings",
+  "modified": "2025-09-18 11:09:28.441632",
+  "name": "Accurate Settings",
+  "redirect_uri": "http://172.24.1.214/api/method/frappe_accurate.api.auth.oauth_callback",
+  "refresh_token": null,
+  "signature_secret": "wzfZPStWsiiTkvuI6viGpLy6JtHhHL5X22EXstJyTstneODfvBq436XqKWyf7VAU",
+  "token_expiry": null
+ }
+]
