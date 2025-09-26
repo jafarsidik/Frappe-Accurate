@@ -4,7 +4,7 @@ from frappe.utils import now
 from frappe import _
 
 @frappe.whitelist(allow_guest=True)
-def hendler():
+def handler():
     """Menerima webhook dari Accurate Online untuk Invoice"""
 
     try:
