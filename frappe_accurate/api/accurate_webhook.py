@@ -31,7 +31,7 @@ def handler():
             #"trigger": "Accurate Invoice",
             #"output": "Received at {}".format(now())
         }).insert(ignore_permissions=True)
-
+        
         frappe.db.commit()
 
         return {"status": "success", "message": "Webhook received"}

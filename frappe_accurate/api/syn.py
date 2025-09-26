@@ -1,85 +1,128 @@
 import frappe
 import requests
-import hmac
-import hashlib
-import base64
-from datetime import datetime
 from frappe_accurate.api.auth import get_headers,get_settings,host_token
 
-ACCURATE_BASE_URL = "https://api.accurate.id"   # ganti dengan URL API Accurate
-ACCURATE_TOKEN = "your_token_here"              # simpan di doctype/setting jika perlu
-
 @frappe.whitelist()
-def sync_to_accurate(docname):
-    """
-    Sinkronisasi Item & Customer antara ERPNext <-> Accurate
-    berdasarkan child table dari dokumen `Sync Log`
-    """
-    doc = frappe.get_doc("Sync Log", docname)
+def sync_data(docname=None):
+	"""
+	Sinkronisasi dua arah:
+	- Dari Accurate -> ERPNext
+	- Dari ERPNext -> Accurate
+	"""
+	settings = get_settings()
 
-    # --- 1. Ambil data list dari Accurate ---
-    headers = {"Authorization": f"Bearer {ACCURATE_TOKEN}"}
-    items_acc = requests.get(f"{ACCURATE_BASE_URL}/items", headers=headers).json()
-    customers_acc = requests.get(f"{ACCURATE_BASE_URL}/customers", headers=headers).json()
+	# Tarik data dari Accurate
+	sync_from_accurate(settings)
 
-    items_acc_map = {i["code"]: i for i in items_acc.get("data", [])}
-    customers_acc_map = {c["code"]: c for c in customers_acc.get("data", [])}
+	# Push data dari ERPNext
+	sync_to_accurate(settings)
 
-    results = []
+	frappe.db.commit()
+	#return "Sync selesai (2 arah)"
 
-    # --- 2. Loop data child table ---
-    for row in doc.items:   # child table berisi Item/Customer
-        if row.doctype_name == "Item":
-            erp_item = frappe.get_doc("Item", row.record_id)
-            code = erp_item.item_code
 
-            if code not in items_acc_map:  # ada di ERPNext, belum ada di Accurate
-                resp = requests.post(f"{ACCURATE_BASE_URL}/items", headers=headers, json={
-                    "code": erp_item.item_code,
-                    "name": erp_item.item_name,
-                    "uom": erp_item.stock_uom
-                })
-                acc_id = resp.json().get("id")
-                erp_item.db_set("accurate_id", acc_id)
-                results.append(f"Item {code} dibuat di Accurate")
+# ---------------------------
+# 1. Accurate -> ERPNext
+# ---------------------------
+def sync_from_accurate(settings):
+	host = host_token()
+	headers = get_headers()
 
-        elif row.doctype_name == "Customer":
-            erp_customer = frappe.get_doc("Customer", row.record_id)
-            code = erp_customer.customer_name
+	for row_mapping in settings.table_mapping_accurate:
+		acc_table = row_mapping.table_accurate
+		erp_table = row_mapping.table_erp
 
-            if code not in customers_acc_map:  # ada di ERPNext, belum ada di Accurate
-                resp = requests.post(f"{ACCURATE_BASE_URL}/customers", headers=headers, json={
-                    "code": erp_customer.customer_name,
-                    "name": erp_customer.customer_name,
-                    "email": erp_customer.email_id
-                })
-                acc_id = resp.json().get("id")
-                erp_customer.db_set("accurate_id", acc_id)
-                results.append(f"Customer {code} dibuat di Accurate")
+		url = f"{host}/accurate/api/{acc_table}/list.do"
+		res = requests.get(url, headers=headers).json()
+		records = res
+		return records
+		"""
+		for rec in records:
+			data_erp = {}
+			for i in range(1, 11):
+				erp_field = row_mapping.get(f"field_erp_{i}")
+				acc_field = row_mapping.get(f"field_accurate_{i}")
+				if erp_field and acc_field:
+					data_erp[erp_field] = rec.get(acc_field)
 
-    # --- 3. Cari data yang ada di Accurate tapi belum ada di ERPNext ---
-    for code, acc_item in items_acc_map.items():
-        if not frappe.db.exists("Item", {"item_code": code}):
-            new_item = frappe.get_doc({
-                "doctype": "Item",
-                "item_code": code,
-                "item_name": acc_item.get("name"),
-                "stock_uom": "Nos",  # default atau mapping
-                "accurate_id": acc_item.get("id")
-            })
-            new_item.insert(ignore_permissions=True)
-            results.append(f"Item {code} dibuat di ERPNext")
+			# Gunakan field pertama sebagai key
+			key_field = row_mapping.get("key_id_field_table_erp")
+			key_value = data_erp.get(key_field)
+			if not key_field or not key_value:
+				continue
 
-    for code, acc_customer in customers_acc_map.items():
-        if not frappe.db.exists("Customer", {"customer_name": code}):
-            new_customer = frappe.get_doc({
-                "doctype": "Customer",
-                "customer_name": code,
-                "customer_type": "Company",
-                "email_id": acc_customer.get("email"),
-                "accurate_id": acc_customer.get("id")
-            })
-            new_customer.insert(ignore_permissions=True)
-            results.append(f"Customer {code} dibuat di ERPNext")
+			exists = frappe.db.exists(erp_table, {key_field: key_value})
 
-    return {"status": "success", "log": results}
+			if not exists:
+				frappe.get_doc({ "doctype": erp_table, **data_erp }).insert(ignore_permissions=True)
+				frappe.logger().info(f"[SYNC] Insert {erp_table} {key_value} dari Accurate")
+			else:
+				frappe.db.set_value(erp_table, exists, data_erp)
+				frappe.logger().info(f"[SYNC] Update {erp_table} {key_value} dari Accurate")
+		"""
+
+# ---------------------------
+# 2. ERPNext -> Accurate
+# ---------------------------
+def sync_to_accurate(settings):
+	host = host_token()
+	headers = get_headers()
+
+	for row_mapping in settings.table_mapping_accurate:
+		acc_table = row_mapping.table_accurate
+		erp_table = row_mapping.table_erp
+
+		# Ambil data ERPNext
+		erp_data = frappe.get_all(
+			erp_table,
+			fields=[row_mapping.get(f"field_erp_{i}") for i in range(1, 11) if row_mapping.get(f"field_erp_{i}")]
+		)
+
+		for row in erp_data:
+			payload = {}
+			for i in range(1, 11):
+				erp_field = row_mapping.get(f"field_erp_{i}")
+				acc_field = row_mapping.get(f"field_accurate_{i}")
+				if erp_field and acc_field:
+					payload[acc_field] = row.get(erp_field)
+
+			# Key pakai field Accurate pertama
+			key_field = row_mapping.get("key_id_field_table_accurate")
+			key_value = payload.get(key_field)
+			if not key_field or not key_value:
+				continue
+
+			# Cek ke Accurate apakah sudah ada
+			check_url = f"{host}/accurate/api/{acc_table}/list.do"
+			params = {"filter.field": key_field, "filter.value": key_value}
+			res = requests.get(check_url, headers=headers, params=params).json()
+			exists = res.get("d", [])
+
+			if not exists:
+				# Insert baru ke Accurate
+				insert_url = f"{host}/accurate/api/{acc_table}/save.do"
+				res_insert = requests.post(insert_url, headers=headers, json=payload).json()
+				frappe.logger().info(f"[SYNC] Insert {acc_table} {key_value} ke Accurate: {res_insert}")
+			else:
+				# Update data ke Accurate
+				record_id = exists[0].get("id")
+				update_url = f"{host}/accurate/api/{acc_table}/save.do?id={record_id}"
+				res_update = requests.post(update_url, headers=headers, json=payload).json()
+				frappe.logger().info(f"[SYNC] Update {acc_table} {key_value} ke Accurate: {res_update}")
+
+
+# ---------------------------
+# Helper Functions
+# ---------------------------
+# def get_settings():
+#     return frappe.get_single("Accurate Setting")
+
+# def host_token():
+#     """Ambil host Accurate terbaru via API /api-token.do"""
+#     return "https://account.accurate.id"
+
+# def get_headers():
+#     return {
+#         "Authorization": f"Bearer {frappe.db.get_single_value('Accurate Setting', 'access_token')}",
+#         "Content-Type": "application/json"
+#     }
