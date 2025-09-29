@@ -16,18 +16,31 @@ frappe.ui.form.on("Accurate Settings", {
         });
     },
     syncronize_data_accurate(frm){
+        let total_steps = 2; // jumlah step sync
+        let current_step = 0;
+
+        // listener untuk update progress realtime
+        frappe.realtime.on("sync_progress", (data) => {
+            current_step = data.step;
+            frappe.show_progress(
+                __("Sync Progress"),
+                current_step,
+                total_steps,
+                data.msg,
+                current_step === total_steps // auto hide kalau sudah selesai
+            );
+        });
+
         frappe.call({
-            method: "frappe_accurate.api.syn.sync_to_accurate",  // ganti dengan path function Python tadi
-            args: {
-                docname: frm.doc.name
-            },
+            method: "frappe_accurate.api.syn.sync_data",
+            args: { docname: frm.doc.name },
             freeze: true,
-            freeze_message: __("Processing sync..."),
-            callback: function(r) {
+            freeze_message: __("Starting sync..."),
+            callback: function (r) {
                 if (r.message && r.message.status === "success") {
                     frappe.msgprint({
                         title: __("Sync Complete"),
-                        message: r.message.log.join("<br>"),
+                        message: __("Sinkronisasi berhasil diselesaikan."),
                         indicator: "green"
                     });
                     frm.reload_doc();
