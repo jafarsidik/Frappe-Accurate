@@ -7,11 +7,46 @@ from frappe_accurate.api.auth import get_headers,get_settings,host_token
 
 @frappe.whitelist(allow_guest=True)
 def testing():
-	host = host_token()  # ambil host terbaru via /api-token.do
-	url = f"{host}/accurate/api/sales-invoice/detail.do?id=600"
-	headers = get_headers()
-	res = requests.get(url, headers=headers, timeout=30).json()
-	return res
+    """Update Sales Order dari Accurate Invoice"""
+    try:
+        host = host_token()  # ambil host terbaru via /api-token.do
+        url = f"{host}/accurate/api/sales-invoice/detail.do?id=700"
+        headers = get_headers()
+        res = requests.get(url, headers=headers, timeout=30).json()
+        records = res['d']
+
+        for r in records['detailItem']:
+            # cari Sales Order berdasarkan custom id
+            so_name = frappe.db.get_value(
+                "Sales Order",
+                {"custom_sales_order_id_accurate": r["salesOrder"]['id']},
+                "name"
+            )
+
+            if not so_name:
+                frappe.log_error(f"Tidak ditemukan Sales Order dengan Accurate ID {r['salesOrder']['id']}", "Sales Order Update Error")
+                continue
+
+            so = frappe.get_doc("Sales Order", so_name)
+
+            # tambahkan child row ke custom child table
+            so.append('custom_sales_invoice_accurate', {
+                'transaction_date': records['transDate'],
+                'sales_invoice_number': records["number"],
+                'sales_invoice_status': records['statusName'],
+                'sales_invoice_id': records['id'],
+                'sales_invoice_amount': records['totalAmount'],
+            })
+
+            # simpan update
+            so.save(ignore_permissions=True)
+
+        frappe.db.commit()
+        return {"status": "success", "message": "Invoice linked to Sales Order", "invoice_id": "700"}
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Accurate Invoice Webhook Error")
+        return {"status": "error", "message": str(e)}
 
 @frappe.whitelist(allow_guest=True)
 def handler():
@@ -69,55 +104,44 @@ def handler():
 		return {"status": "error", "message": str(e)}
 
 def save_sales_invoice(row):
-	try:
-		# Contoh mapping data Invoice Accurate ke Doctype Frappe
-		# invoice = frappe.get_doc({
-		#     "doctype": "Sales Invoice",
-		#     "customer": data.get("customer_name"),
-		#     "posting_date": data.get("transDate"),
-		#     "due_date": data.get("dueDate"),
-		#     "custom_accurate_invoice_id": data.get("id"),
-		#     "custom_invoice_number": data.get("number"),
-		#     "items": []
-		# })
+    """Update Sales Order dari Accurate Invoice"""
+    try:
+        host = host_token()  # ambil host terbaru via /api-token.do
+        url = f"{host}/accurate/api/sales-invoice/detail.do?id={row['salesInvoiceId']}"
+        headers = get_headers()
+        res = requests.get(url, headers=headers, timeout=30).json()
+        records = res['d']
 
-		# Tambahkan item jika ada
-		# for item in data.get("detailItem", []):
-		#     invoice.append("items", {
-		#         "item_code": item.get("itemName"),
-		#         "qty": item.get("quantity"),
-		#         "rate": item.get("unitPrice")
-		#     })
+        for r in records['detailItem']:
+            # cari Sales Order berdasarkan custom id
+            so_name = frappe.db.get_value(
+                "Sales Order",
+                {"custom_sales_order_id_accurate": r["salesOrder"]['id']},
+                "name"
+            )
 
-		# invoice.insert(ignore_permissions=True)
-		"""Simpan ke Doctype Sales Order"""
-		try:
-			
-			host = host_token()  # ambil host terbaru via /api-token.do
-			url = f"{host}/accurate/api/sales-invoice/detail.do?id={row['salesInvoiceId']}"
-			headers = get_headers()
-			res = requests.get(url, headers=headers, timeout=30).json()
-			records = res['d']
-			for r in records['detailItem']:
-				so = frappe.get_doc({
-					"doctype": "Sales Order",
-					"custom_sales_order_id_accurate": r["salesOrder"]['id'],
-					"custom_sales_order_number_accurate": r["salesOrder"]['number'],			
-				})
-				so.append('custom_sales_invoice_accurate',{
-					'transaction_date':records['transDate'],
-					'sales_invoice_number':records["number"],
-					'sales_invoice_status':records['statusName'],
-					'sales_invoice_id':records['id'],
-					'sales_invoice_amount':records['totalAmount'],
-				})
-				so.insert(ignore_permissions=True)
-		except frappe.DuplicateEntryError:
-			frappe.log_error(json.dumps(row, indent=2), "Duplicate Sales Order")
-		frappe.db.commit()
+            if not so_name:
+                frappe.log_error(f"Tidak ditemukan Sales Order dengan Accurate ID {r['salesOrder']['id']}", "Sales Order Update Error")
+                continue
 
-		return {"status": "success", "message": "Invoice received", "invoice_id": row['salesInvoiceNo']}
+            so = frappe.get_doc("Sales Order", so_name)
 
-	except Exception as e:
-		frappe.log_error(frappe.get_traceback(), "Accurate Invoice Webhook Error")
-		return {"status": "error", "message": str(e)}
+            # tambahkan child row ke custom child table
+            so.append('custom_sales_invoice_accurate', {
+                'transaction_date': records['transDate'],
+                'sales_invoice_number': records["number"],
+                'sales_invoice_status': records['statusName'],
+                'sales_invoice_id': records['id'],
+                'sales_invoice_amount': records['totalAmount'],
+            })
+
+            # simpan update
+            so.save(ignore_permissions=True)
+
+        frappe.db.commit()
+        return {"status": "success", "message": "Invoice linked to Sales Order", "invoice_id": "700"}
+
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Accurate Invoice Webhook Error")
+        return {"status": "error", "message": str(e)}
+    
