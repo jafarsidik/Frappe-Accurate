@@ -243,5 +243,6 @@ app_license = "mit"
 # }
 
 fixtures = [
-    "Accurate Settings"
+    "Accurate Settings",
+    "Server Script"
 ]
