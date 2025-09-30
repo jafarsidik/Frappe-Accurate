@@ -104,7 +104,7 @@ def save_sales_invoice(row):
 					"custom_sales_order_id_accurate": r["salesOrder"]['id'],
 					"custom_sales_order_number_accurate": r["salesOrder"]['number'],			
 				})
-				so.append({
+				so.append('custom_sales_invoice_accurate',{
 					'transaction_date':records['transDate'],
 					'sales_invoice_number':records["number"],
 					'sales_invoice_status':records['statusName'],
