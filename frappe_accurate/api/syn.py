@@ -47,36 +47,36 @@ def sync_data(docname=None):
 def run_sync(settings, user):
 	try:
 		# === PHASE 1: Accurate → ERPNext ===
-		# frappe.publish_realtime(
-		# 	"sync_progress",
-		# 	{"phase": "Accurate → ERPNext", "progress": 0, "msg": _("Mengambil data dari Accurate...")},
-		# 	user=user,
-		# 	doctype="Accurate Settings",
-		# 	docname="Accurate Settings"
-		# )
+		frappe.publish_realtime(
+			"sync_progress",
+			{"phase": "Accurate → ERPNext", "progress": 0, "msg": _("Mengambil data dari Accurate...")},
+			user=user,
+			doctype="Accurate Settings",
+			docname="Accurate Settings"
+		)
 
 		# total_from, done_from = sync_from_accurate(settings, user)
 
-		# frappe.publish_realtime(
-		# 	"sync_progress",
-		# 	{
-		# 		"phase": "Accurate → ERPNext",
-		# 		"progress": 100,
-		# 		"msg": f"✅ Selesai sinkronisasi {done_from}/{total_from} data dari Accurate.",
-		# 	},
-		# 	user=user,
-   		# 	doctype="Accurate Settings",
-		# 	docname="Accurate Settings"
-		# )
+		frappe.publish_realtime(
+			"sync_progress",
+			{
+				"phase": "Accurate → ERPNext",
+				"progress": 100,
+				"msg": f"✅ Selesai sinkronisasi {done_from}/{total_from} data dari Accurate.",
+			},
+			user=user,
+   			doctype="Accurate Settings",
+			docname="Accurate Settings"
+		)
 
 		# === PHASE 2: ERPNext → Accurate ===
-		# frappe.publish_realtime(
-		# 	"sync_progress",
-		# 	{"phase": "ERPNext → Accurate", "progress": 0, "msg": _("Mengirim data ke Accurate...")},
-		# 	user=user,
-   		# 	doctype="Accurate Settings",
-		# 	docname="Accurate Settings"
-		# )
+		frappe.publish_realtime(
+			"sync_progress",
+			{"phase": "ERPNext → Accurate", "progress": 0, "msg": _("Mengirim data ke Accurate...")},
+			user=user,
+   			doctype="Accurate Settings",
+			docname="Accurate Settings"
+		)
 
 		total_to, done_to = sync_to_accurate(settings, user)
 
