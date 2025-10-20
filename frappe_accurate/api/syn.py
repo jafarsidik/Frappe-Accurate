@@ -55,7 +55,7 @@ def run_sync(settings, user):
 			docname="Accurate Settings"
 		)
 
-		# total_from, done_from = sync_from_accurate(settings, user)
+		total_from, done_from = sync_from_accurate(settings, user)
 
 		frappe.publish_realtime(
 			"sync_progress",
