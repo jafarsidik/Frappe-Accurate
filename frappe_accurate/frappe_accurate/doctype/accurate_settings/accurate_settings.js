@@ -15,45 +15,60 @@ frappe.ui.form.on("Accurate Settings", {
             }
         });
     },
-    syncronize_data_accurate(frm){
-        let total_steps = 2; // jumlah step sync
-        let current_step = 0;
+    syncronize_data_accurate(frm) {
+        let progress_dialog = null;
 
-        // listener untuk update progress realtime
+        // Dengarkan event progress dari server
         frappe.realtime.on("sync_progress", (data) => {
-            current_step = data.step;
-            frappe.show_progress(
-                __("Sync Progress"),
-                current_step,
-                total_steps,
-                data.msg,
-                current_step === total_steps // auto hide kalau sudah selesai
-            );
-        });
+            const phase = data.phase || __("Sinkronisasi");
+            const progress = data.progress || 0;
+            const msg = data.msg || "";
 
+            if (!progress_dialog) {
+                progress_dialog = frappe.show_progress(
+                    phase,
+                    progress,
+                    100,
+                    msg,
+                    false
+                );
+            } else {
+                frappe.show_progress(
+                    phase,
+                    progress,
+                    100,
+                    msg,
+                    progress >= 100
+                );
+            }
+        },"Accurate Settings", "Accurate Settings");
+
+        // Jalankan proses sinkronisasi
         frappe.call({
             method: "frappe_accurate.api.syn.sync_data",
             args: { docname: frm.doc.name },
             freeze: true,
-            freeze_message: __("Starting sync..."),
+            freeze_message: __("Menjalankan sinkronisasi di background..."),
             callback: function (r) {
-                if (r.message && r.message.status === "success") {
+                if (r && r.message && r.message.status === "queued") {
                     frappe.msgprint({
-                        title: __("Sync Complete"),
-                        message: __("Sinkronisasi berhasil diselesaikan."),
-                        indicator: "green"
-                    });
-                    frm.reload_doc();
-                } else {
-                    frappe.msgprint({
-                        title: __("Error"),
-                        message: __("Sync failed"),
-                        indicator: "red"
+                        title: __("Sinkronisasi Dimulai"),
+                        message: __("Proses sinkronisasi berjalan di background. Progress akan tampil di layar."),
+                        indicator: "blue",
                     });
                 }
-            }
+            },
+            error: function (err) {
+                frappe.msgprint({
+                    title: __("Gagal"),
+                    message: __("Terjadi kesalahan saat memulai sinkronisasi."),
+                    indicator: "red",
+                });
+            },
         });
     }
+
+
     
 });
 frappe.ui.form.on("DB ID Accurate", {
