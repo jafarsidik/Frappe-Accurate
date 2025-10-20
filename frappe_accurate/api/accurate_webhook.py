@@ -110,7 +110,7 @@ def save_sales_order(row):
 				so = frappe.get_doc("Sales Order", so_name)
 				so.custom_statusname = records['statusName']
 				
-				# simpan update
+				# simpan update 
 				so.save(ignore_permissions=True)
 
 			frappe.db.commit()
