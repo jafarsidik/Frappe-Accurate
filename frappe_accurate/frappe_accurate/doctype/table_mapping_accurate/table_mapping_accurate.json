@@ -1,0 +1,275 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-09-26 13:21:29.081136",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "enable",
+  "table_section",
+  "table_erp",
+  "key_id_field_table_erp",
+  "column_break_lvab",
+  "table_accurate",
+  "key_id_field_table_accurate",
+  "field_section",
+  "field_table_erp_column",
+  "field_erp_1",
+  "field_erp_2",
+  "field_erp_3",
+  "field_erp_4",
+  "field_erp_5",
+  "field_erp_6",
+  "field_erp_7",
+  "field_erp_8",
+  "field_erp_9",
+  "field_erp_10",
+  "field_table_accurate_column",
+  "field_accurate_1",
+  "field_accurate_2",
+  "field_accurate_3",
+  "field_accurate_4",
+  "field_accurate_5",
+  "field_accurate_6",
+  "field_accurate_7",
+  "field_accurate_8",
+  "field_accurate_9",
+  "field_accurate_10",
+  "field_table_accurate_insert_column",
+  "field_accurate_insert_1",
+  "field_accurate_insert_2",
+  "field_accurate_insert_3",
+  "field_accurate_insert_4",
+  "field_accurate_insert_5",
+  "field_accurate_insert_6",
+  "field_accurate_insert_7",
+  "field_accurate_insert_8",
+  "field_accurate_insert_9",
+  "field_accurate_insert_10"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "enable",
+   "fieldtype": "Check",
+   "label": "Enable"
+  },
+  {
+   "fieldname": "table_section",
+   "fieldtype": "Section Break",
+   "label": "Table"
+  },
+  {
+   "fieldname": "table_erp",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Table ERP",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "key_id_field_table_erp",
+   "fieldtype": "Data",
+   "label": "Key ID Field Table ERP"
+  },
+  {
+   "fieldname": "column_break_lvab",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "table_accurate",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Table Accurate"
+  },
+  {
+   "fieldname": "key_id_field_table_accurate",
+   "fieldtype": "Data",
+   "label": "Key ID Field Table Accurate"
+  },
+  {
+   "fieldname": "field_section",
+   "fieldtype": "Section Break",
+   "label": "Field"
+  },
+  {
+   "fieldname": "field_table_erp_column",
+   "fieldtype": "Column Break",
+   "label": "Field Table ERP"
+  },
+  {
+   "fieldname": "field_erp_1",
+   "fieldtype": "Data",
+   "label": "field_erp_1"
+  },
+  {
+   "fieldname": "field_erp_2",
+   "fieldtype": "Data",
+   "label": "field_erp_2"
+  },
+  {
+   "fieldname": "field_erp_3",
+   "fieldtype": "Data",
+   "label": "field_erp_3"
+  },
+  {
+   "fieldname": "field_erp_4",
+   "fieldtype": "Data",
+   "label": "field_erp_4"
+  },
+  {
+   "fieldname": "field_erp_5",
+   "fieldtype": "Data",
+   "label": "field_erp_5"
+  },
+  {
+   "fieldname": "field_erp_6",
+   "fieldtype": "Data",
+   "label": "field_erp_6"
+  },
+  {
+   "fieldname": "field_erp_7",
+   "fieldtype": "Data",
+   "label": "field_erp_7"
+  },
+  {
+   "fieldname": "field_erp_8",
+   "fieldtype": "Data",
+   "label": "field_erp_8"
+  },
+  {
+   "fieldname": "field_erp_9",
+   "fieldtype": "Data",
+   "label": "field_erp_9"
+  },
+  {
+   "fieldname": "field_erp_10",
+   "fieldtype": "Data",
+   "label": "field_erp_10"
+  },
+  {
+   "fieldname": "field_table_accurate_column",
+   "fieldtype": "Column Break",
+   "label": "Field Table Accurate Get Data"
+  },
+  {
+   "fieldname": "field_accurate_1",
+   "fieldtype": "Data",
+   "label": "field_accurate_1"
+  },
+  {
+   "fieldname": "field_accurate_2",
+   "fieldtype": "Data",
+   "label": "field_accurate_2"
+  },
+  {
+   "fieldname": "field_accurate_3",
+   "fieldtype": "Data",
+   "label": "field_accurate_3"
+  },
+  {
+   "fieldname": "field_accurate_4",
+   "fieldtype": "Data",
+   "label": "field_accurate_4"
+  },
+  {
+   "fieldname": "field_accurate_5",
+   "fieldtype": "Data",
+   "label": "field_accurate_5"
+  },
+  {
+   "fieldname": "field_accurate_6",
+   "fieldtype": "Data",
+   "label": "field_accurate_6"
+  },
+  {
+   "fieldname": "field_accurate_7",
+   "fieldtype": "Data",
+   "label": "field_accurate_7"
+  },
+  {
+   "fieldname": "field_accurate_8",
+   "fieldtype": "Data",
+   "label": "field_accurate_8"
+  },
+  {
+   "fieldname": "field_accurate_9",
+   "fieldtype": "Data",
+   "label": "field_accurate_9"
+  },
+  {
+   "fieldname": "field_accurate_10",
+   "fieldtype": "Data",
+   "label": "field_accurate_10"
+  },
+  {
+   "fieldname": "field_table_accurate_insert_column",
+   "fieldtype": "Column Break",
+   "label": "Field Table Accurate Insert"
+  },
+  {
+   "fieldname": "field_accurate_insert_1",
+   "fieldtype": "Data",
+   "label": "field_accurate_insert_1"
+  },
+  {
+   "fieldname": "field_accurate_insert_2",
+   "fieldtype": "Data",
+   "label": "field_accurate_insert_2"
+  },
+  {
+   "fieldname": "field_accurate_insert_3",
+   "fieldtype": "Data",
+   "label": "field_accurate_insert_3"
+  },
+  {
+   "fieldname": "field_accurate_insert_4",
+   "fieldtype": "Data",
+   "label": "field_accurate_insert_4"
+  },
+  {
+   "fieldname": "field_accurate_insert_5",
+   "fieldtype": "Data",
+   "label": "field_accurate_insert_5"
+  },
+  {
+   "fieldname": "field_accurate_insert_6",
+   "fieldtype": "Data",
+   "label": "field_accurate_insert_6"
+  },
+  {
+   "fieldname": "field_accurate_insert_7",
+   "fieldtype": "Data",
+   "label": "field_accurate_insert_7"
+  },
+  {
+   "fieldname": "field_accurate_insert_8",
+   "fieldtype": "Data",
+   "label": "field_accurate_insert_8"
+  },
+  {
+   "fieldname": "field_accurate_insert_9",
+   "fieldtype": "Data",
+   "label": "field_accurate_insert_9"
+  },
+  {
+   "fieldname": "field_accurate_insert_10",
+   "fieldtype": "Data",
+   "label": "field_accurate_insert_10"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-11-19 14:02:54.528349",
+ "modified_by": "Administrator",
+ "module": "Frappe Accurate",
+ "name": "Table Mapping Accurate",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

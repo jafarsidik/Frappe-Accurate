@@ -8,7 +8,8 @@ def testing():
 	settings = get_settings()
 	host = host_token()
 	headers = get_headers()
-	url = f"{host}/accurate/api/item/list.do?page=2"
+	#url = f"{host}/accurate/api/item-category/list.do?page=2"
+	url = f"{host}/accurate/api/item-category/detail.do?id=51"
 	res = requests.get(url, headers=headers).json()
 	return res
 # ======================================================

@@ -9,6 +9,7 @@
   "get_database_accurate_by_api_token",
   "db_id",
   "sinkronisasi_data_antara_erpnext_dan_accurate_section",
+  "progress_syn_html",
   "syncronize_data_accurate",
   "table_mapping_accurate",
   "api_token_section",
@@ -26,7 +27,8 @@
   {
    "fieldname": "app_key",
    "fieldtype": "Data",
-   "label": "App Key"
+   "label": "App Key",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_sryk",
@@ -51,7 +53,8 @@
   {
    "fieldname": "signature_secret",
    "fieldtype": "Data",
-   "label": "Signature Secret"
+   "label": "Signature Secret",
+   "read_only": 1
   },
   {
    "fieldname": "get_database_accurate_by_api_token",
@@ -73,13 +76,17 @@
    "fieldtype": "Table",
    "label": "Table Mapping Accurate",
    "options": "Table Mapping Accurate"
+  },
+  {
+   "fieldname": "progress_syn_html",
+   "fieldtype": "HTML"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-09-26 14:41:59.766939",
+ "modified": "2025-11-19 10:53:13.076632",
  "modified_by": "Administrator",
  "module": "Frappe Accurate",
  "name": "Accurate Settings",
