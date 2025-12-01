@@ -151,7 +151,11 @@ def sync_from_accurate_table(row_mapping, settings, user, global_done, global_to
                 global_done += 1
 
                 send_table_progress(key, "import", done_table, total_table, global_done, global_total)
-
+                
+                frappe.log_error(
+                    title=f"[SYNC Import] Success {acc_table} {rec.get('id')}",
+                    message=frappe.as_json(detail)
+                )
             except Exception:
                 frappe.log_error(frappe.get_traceback(), f"[SYNC Import] Error {acc_table} {rec.get('id')}")
 
@@ -217,8 +221,12 @@ def sync_to_accurate_table(row_mapping, user, global_done, global_total):
                 if acc_id:
                     frappe.db.set_value(erp_table, row.name, key_field_erp, acc_id)
                     frappe.db.commit()
-            frappe.log_error(res_insert, f"[SYNC Export] Success {acc_table} {row.get('id')} ")
-   
+           
+            frappe.log_error(
+                title=f"[SYNC Export] Success {acc_table} {row.get('id')}",
+                message=frappe.as_json(res_insert)
+            )
+
             done_table += 1
             global_done += 1
 
