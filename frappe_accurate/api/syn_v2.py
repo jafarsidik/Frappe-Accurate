@@ -146,14 +146,14 @@ def sync_from_accurate_table(row_mapping, settings, user, global_done, global_to
                 else:
                     frappe.db.set_value(erp_table, exists, data_erp)
                 frappe.db.commit()
-
+                
                 done_table += 1
                 global_done += 1
 
                 send_table_progress(key, "import", done_table, total_table, global_done, global_total)
 
             except Exception:
-                frappe.log_error(frappe.get_traceback(), f"[SYNC IMPORT] Error {acc_table} {rec.get('id')}")
+                frappe.log_error(frappe.get_traceback(), f"[SYNC Import] Error {acc_table} {rec.get('id')}")
 
         if page >= sp.get("pageCount", 1):
             break
@@ -186,6 +186,9 @@ def sync_to_accurate_table(row_mapping, user, global_done, global_total):
                 acc_field = row_mapping.get(f"field_accurate_insert_{i}")
                 if erp_field and acc_field:
                     payload[acc_field] = row.get(erp_field)
+            # 🔹 Normalisasi khusus untuk ITEM (karena Accurate butuh payload berbeda)
+            if acc_table == "item":
+                payload = normalize_item_payload(payload)
 
             key_field_acc = row_mapping.key_id_field_table_accurate
             key_field_erp = row_mapping.key_id_field_table_erp
@@ -205,16 +208,17 @@ def sync_to_accurate_table(row_mapping, user, global_done, global_total):
             if exists_in_acc and acc_id:
                 payload["id"] = acc_id
                 update_url = f"{host}/accurate/api/{acc_table}/save.do"
-                requests.post(update_url, headers=headers, json=payload)
+                res_insert = requests.post(update_url, headers=headers, data=payload)
             else:
                 insert_url = f"{host}/accurate/api/{acc_table}/save.do"
-                res_insert = requests.post(insert_url, headers=headers, json=payload).json()
+                res_insert = requests.post(insert_url, headers=headers, data=payload).json()
                 r = res_insert.get("r", {})
                 acc_id = r.get("id") or r.get("no")
                 if acc_id:
                     frappe.db.set_value(erp_table, row.name, key_field_erp, acc_id)
                     frappe.db.commit()
-
+            frappe.log_error(res_insert, f"[SYNC Export] Success {acc_table} {row.get('id')} ")
+   
             done_table += 1
             global_done += 1
 
@@ -240,3 +244,18 @@ def get_nested_value(data, field_path):
 
 def normalize_key(name):
     return name.strip().lower().replace(" ", "-")
+def normalize_item_payload(payload):
+    # itemType wajib
+    if "itemType" not in payload:
+        payload["itemType"] = "INVENTORY"
+
+    # unit wajib → harus object
+    if "unit" in payload and isinstance(payload["unit"], str):
+        payload["unit"] = {"name": payload["unit"]}
+
+    # itemCategory wajib object
+    if "itemCategory" in payload and isinstance(payload["itemCategory"], int):
+        payload["itemCategory"] = {"id": payload["itemCategory"]}
+
+    return payload
+
