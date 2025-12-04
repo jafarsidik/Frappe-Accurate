@@ -17,7 +17,7 @@ def generate_signature(timestamp: str, secret_key: str) -> str:
     secret = secret_key.encode("utf-8")
     signature = hmac.new(secret, message, hashlib.sha256).digest()
     return base64.b64encode(signature).decode()
-
+@frappe.whitelist()
 def get_headers():
     """
     Generate headers untuk request Accurate API
