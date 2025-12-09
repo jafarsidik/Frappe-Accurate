@@ -28,13 +28,13 @@
   "doctype_event": "After Save",
   "enable_rate_limit": 0,
   "event_frequency": "All",
-  "modified": "2025-12-09 15:25:30.644900",
+  "modified": "2025-12-09 19:21:50.472091",
   "module": "Frappe Accurate",
   "name": "Sales Order Accurate",
   "rate_limit_count": 5,
   "rate_limit_seconds": 86400,
   "reference_doctype": "Sales Order",
-  "script": "doc_customer = frappe.get_doc(\"Customer\",doc.customer)\r\ndoc.custom_customerno = doc_customer.custom_customerno\r\n# siapkan list items\r\nitems = []\r\nfor d in doc.items:   # loop child table Sales Invoice di ERPNext\r\n    items.append({\r\n        \"itemNo\": d.custom_item_code_accurate,\r\n        \"unitPrice\": d.rate,\r\n        \"quantity\": d.qty,\r\n        \"detailName\": d.item_name,\r\n        #\"warehouseName\": d.warehouse\r\n    })\r\n\"\"\"Jika Sudah Ada Maka Sifat nya Update \"\"\"\r\n\r\nid = \"\"\r\nif doc.custom_sales_order_id_accurate:\r\n    id=doc.custom_sales_order_id_accurate\r\n    \r\nres = frappe.call(\r\n    \"frappe_accurate.api.sales_order.save_do\",\r\n    customerNo=doc.custom_customerno,\r\n    items=items,\r\n    id=id,\r\n    #statusName=doc.custom_statusname\r\n)\r\n\r\nif res['s'] == True:\r\n    doc.db_set(\"custom_sales_order_number_accurate\", res['r']['number'])\r\n    doc.db_set(\"custom_sales_order_id_accurate\", res['r']['id'])\r\n    doc.db_set(\"custom_statusname\", res['r']['statusName'])\r\n    \r\nfrappe.log_error(\"Accurate Create Sales Order Response\",str(res))\r\n",
+  "script": "doc_customer = frappe.get_doc(\"Customer\",doc.customer)\r\ndoc.custom_customerno = doc_customer.custom_customerno\r\n# siapkan list items\r\nitems = []\r\nfor d in doc.items:   # loop child table Sales Invoice di ERPNext\r\n    items.append({\r\n        \"itemNo\": d.item_code,\r\n        \"unitPrice\": d.rate,\r\n        \"quantity\": d.qty,\r\n        \"detailName\": d.item_name,\r\n        #\"warehouseName\": d.warehouse\r\n    })\r\n\"\"\"Jika Sudah Ada Maka Sifat nya Update \"\"\"\r\n\r\nid = \"\"\r\nif doc.custom_sales_order_id_accurate:\r\n    id=doc.custom_sales_order_id_accurate\r\n    \r\nres = frappe.call(\r\n    \"frappe_accurate.api.sales_order.save_do\",\r\n    customerNo=doc.custom_customerno,\r\n    items=items,\r\n    id=id,\r\n    #statusName=doc.custom_statusname\r\n)\r\n\r\nif res['s'] == True:\r\n    doc.db_set(\"custom_sales_order_number_accurate\", res['r']['number'])\r\n    doc.db_set(\"custom_sales_order_id_accurate\", res['r']['id'])\r\n    doc.db_set(\"custom_statusname\", res['r']['statusName'])\r\n    \r\nfrappe.log_error(\"Accurate Create Sales Order Response\",str(res))\r\n",
   "script_type": "DocType Event"
  },
  {
@@ -85,13 +85,13 @@
   "doctype_event": "After Save",
   "enable_rate_limit": 0,
   "event_frequency": "All",
-  "modified": "2025-12-09 15:20:28.124395",
+  "modified": "2025-12-09 19:12:54.625066",
   "module": "Frappe Accurate",
   "name": "Purchase Order Accurate",
   "rate_limit_count": 5,
   "rate_limit_seconds": 86400,
   "reference_doctype": "Purchase Order",
-  "script": "doc_supplier = frappe.get_doc(\"Supplier\",doc.supplier)\r\ndoc.custom_vendorno = doc_supplier.custom_id_accurate\r\n# siapkan list items\r\nitems = []\r\nfor d in doc.items:   # loop child table Sales Invoice di ERPNext\r\n    items.append({\r\n        \"itemNo\": d.custom_itemno_accurate,\r\n        \"unitPrice\": d.rate,\r\n        \"quantity\": d.qty,\r\n        #\"detailName\": d.item_name,\r\n        #\"warehouseName\": d.warehouse\r\n    })\r\n\"\"\"Jika Sudah Ada Maka Sifat nya Update \"\"\"\r\n\r\nid = \"\"\r\nif doc.custom_purchase_order_id_accurate:\r\n    id=doc.custom_purchase_order_id_accurate\r\n    \r\nres = frappe.call(\r\n    \"frappe_accurate.api.purchase_order.save_do\",\r\n    vendorNo=doc.supplier,\r\n    items=items,\r\n    toAddress=doc.custom_address_ship_to,\r\n    id=id,\r\n    statusName=doc.custom_statusname\r\n)\r\n\r\nif res['s'] == True:\r\n    doc.db_set(\"custom_purchase_order_number_accurate\", res['r']['number'])\r\n    doc.db_set(\"custom_purchase_order_id_accurate\", res['r']['id'])\r\n    doc.db_set(\"custom_purchase_order_status_accurate\", res['r']['statusName'])\r\n    \r\nfrappe.log_error(\"Accurate Create Purchase Order Response\",str(res))\r\n",
+  "script": "doc_supplier = frappe.get_doc(\"Supplier\",doc.supplier)\r\ndoc.custom_vendorno = doc_supplier.custom_id_accurate\r\n# siapkan list items\r\nitems = []\r\nfor d in doc.items:   # loop child table Sales Invoice di ERPNext\r\n    items.append({\r\n        \"itemNo\": d.item_code,\r\n        \"unitPrice\": d.rate,\r\n        \"quantity\": d.qty,\r\n        #\"detailName\": d.item_name,\r\n        #\"warehouseName\": d.warehouse\r\n    })\r\n\"\"\"Jika Sudah Ada Maka Sifat nya Update \"\"\"\r\n\r\nid = \"\"\r\nif doc.custom_purchase_order_id_accurate:\r\n    id=doc.custom_purchase_order_id_accurate\r\n    \r\nres = frappe.call(\r\n    \"frappe_accurate.api.purchase_order.save_do\",\r\n    vendorNo=doc.supplier,\r\n    items=items,\r\n    toAddress=doc.custom_address_ship_to,\r\n    id=id,\r\n    statusName=doc.custom_statusname\r\n)\r\n\r\nif res['s'] == True:\r\n    doc.db_set(\"custom_purchase_order_number_accurate\", res['r']['number'])\r\n    doc.db_set(\"custom_purchase_order_id_accurate\", res['r']['id'])\r\n    doc.db_set(\"custom_purchase_order_status_accurate\", res['r']['statusName'])\r\n    \r\nfrappe.log_error(\"Accurate Create Purchase Order Response\",str(res))\r\n",
   "script_type": "DocType Event"
  }
 ]

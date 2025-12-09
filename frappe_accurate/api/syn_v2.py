@@ -8,7 +8,7 @@ def testing_sid():
 	settings = get_settings()
 	host = host_token()
 	headers = get_headers()
-	url = f"{host}/accurate/api/vendor/detail.do?id=750"
+	url = f"{host}/accurate/api/item/detail.do?id=13058"
 	res = requests.get(url, headers=headers).json()
 	return res
 
@@ -172,10 +172,14 @@ def sync_from_accurate_table(row_mapping, settings, user, global_done, global_to
 					data_erp['uom_name'] = data_acc.get("name")
 
 				if acc_table == "item" and erp_table == "Item":
-					data_erp['item_group'] = "Mixing" #data_acc.get("itemCategoryName")
+					item_category = data_acc.get("itemCategory") or {}
+					data_erp['item_group'] = item_category.get("name")
+					
 					data_erp['custom_item_type_accurate'] = data_acc.get("itemType")
-					data_erp['item_code'] = data_acc.get("name")
+					#data_erp['item_code'] = data_acc.get("name")
+					data_erp['item_code'] = data_acc.get("no")
 					data_erp['stock_uom'] = data_acc.get("unit1Name")
+					data_erp['custom_item_id_accurate'] = acc_id
 				# =============================
 				# PRIMARY KEY
 				# =============================
@@ -199,12 +203,21 @@ def sync_from_accurate_table(row_mapping, settings, user, global_done, global_to
 				# =============================
 				# INSERT / UPDATE
 				# =============================
-				exists = frappe.db.exists(erp_table, {key_field_erp: key_value})
-
-				if not exists:
-					frappe.get_doc({"doctype": erp_table, **data_erp}).insert(ignore_permissions=True)
+				
+				if acc_table == "item" and erp_table == "Item":
+					exists_item =  frappe.db.get_value(erp_table,data_acc.get("no"))
+					if not exists_item:
+						frappe.get_doc({"doctype": erp_table, **data_erp}).insert(ignore_permissions=True)
+					else:
+						frappe.db.set_value(erp_table, exists_item, data_erp)
+				#Default
 				else:
-					frappe.db.set_value(erp_table, exists, data_erp)
+					exists = frappe.db.exists(erp_table, {key_field_erp: key_value})
+					if not exists:
+						
+						frappe.get_doc({"doctype": erp_table, **data_erp}).insert(ignore_permissions=True)
+					else:
+						frappe.db.set_value(erp_table, exists, data_erp)
 
 				frappe.db.commit()
 
@@ -216,7 +229,7 @@ def sync_from_accurate_table(row_mapping, settings, user, global_done, global_to
 				send_table_progress(key, "import", done_table, total_table, global_done, global_total)
 
 			except Exception:
-				frappe.log_error(frappe.as_json(data_erp), f"[DEBUG DATA ERP] {acc_table} {acc_id}")
+				frappe.log_error(frappe.as_json(data_acc), f"[DEBUG DATA ERP] {acc_table} {acc_id}")
 				frappe.log_error(frappe.get_traceback(), f"[ERROR IMPORT] {acc_table} {acc_id}")
 
 		# Next page
@@ -303,6 +316,7 @@ def sync_to_accurate_table(row_mapping, user, global_done, global_total):
 			if erp_table == "Item" and acc_table == "item":
 				payload['itemCategoryName'] = row.get("item_group")
 				payload['name'] = row.get("item_code")
+				payload['no'] = row.get("item_code")
 				payload['unit1Name'] = row.get("stock_uom")
 				payload['itemType'] = "INVENTORY"
 

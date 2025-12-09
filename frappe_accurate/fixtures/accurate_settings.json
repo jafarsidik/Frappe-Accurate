@@ -22,7 +22,7 @@
   ],
   "docstatus": 0,
   "doctype": "Accurate Settings",
-  "modified": "2025-12-04 22:42:08.200154",
+  "modified": "2025-12-09 18:12:19.323579",
   "name": "Accurate Settings",
   "signature_secret": "wzfZPStWsiiTkvuI6viGpLy6JtHhHL5X22EXstJyTstneODfvBq436XqKWyf7VAU",
   "table_mapping_accurate": [
@@ -37,7 +37,7 @@
     "table_erp": "Item Group"
    },
    {
-    "enable": 1,
+    "enable": 0,
     "key_id_field_table_accurate": "id",
     "key_id_field_table_erp": "custom_id_accurate",
     "parent": "Accurate Settings",
@@ -47,7 +47,7 @@
     "table_erp": "UOM"
    },
    {
-    "enable": 0,
+    "enable": 1,
     "key_id_field_table_accurate": "id",
     "key_id_field_table_erp": "custom_item_id_accurate",
     "parent": "Accurate Settings",
@@ -57,7 +57,7 @@
     "table_erp": "Item"
    },
    {
-    "enable": 0,
+    "enable": 1,
     "key_id_field_table_accurate": "id",
     "key_id_field_table_erp": "custom_id_customer_accurate",
     "parent": "Accurate Settings",
@@ -67,7 +67,7 @@
     "table_erp": "Customer"
    },
    {
-    "enable": 0,
+    "enable": 1,
     "key_id_field_table_accurate": "id",
     "key_id_field_table_erp": "custom_id_accurate",
     "parent": "Accurate Settings",
