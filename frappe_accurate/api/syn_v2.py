@@ -301,7 +301,7 @@ def sync_to_accurate_table(row_mapping, user, global_done, global_total):
 				payload['name'] = row.get("uom_name")
 
 			if erp_table == "Item" and acc_table == "item":
-				payload['itemCategoryName'] = row.get("item_group_name")
+				payload['itemCategoryName'] = row.get("item_group")
 				payload['name'] = row.get("item_code")
 				payload['unit1Name'] = row.get("stock_uom")
 				payload['itemType'] = "INVENTORY"
